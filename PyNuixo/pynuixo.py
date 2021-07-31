@@ -56,11 +56,10 @@ class PyNuixo:
         self.pickle_path = "cookies.pkl"
         self.session = requests.Session()
 
-    def login(self, username=None, password=None) -> bool:
-        if not username:
-            username = input("username :")
-        if not password:
-            password = getpass("password :")
+    def login(self, username, password) -> bool:
+        if username is None or password is None:
+            raise Exception(f"LOGIN ERROR: {LoginState.NOT_ENTERED.name}")
+
         res = self.session.get(BASE_URL)
         soup = BeautifulSoup(res.text, "html.parser")
         token = soup.find(attrs={'name': '_token'}).get('value')
