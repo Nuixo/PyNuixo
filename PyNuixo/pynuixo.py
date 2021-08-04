@@ -52,21 +52,21 @@ class LoginState(Enum):
 
 
 class PyNuixo:
-    def __init__(self):
+    def __init__(self, username, password):
         self.pickle_path = "cookies.pkl"
         self.session = requests.Session()
 
-    def login(self, username, password) -> bool:
-        if username is None or password is None:
-            raise Exception(f"LOGIN ERROR: {LoginState.NOT_ENTERED.name}")
+        self.username = username
+        self.password = password
 
+    def login(self) -> bool:
         res = self.session.get(BASE_URL)
         soup = BeautifulSoup(res.text, "html.parser")
         token = soup.find(attrs={'name': '_token'}).get('value')
 
         data = {
-            'loginId': username,
-            'password': password,
+            'loginId': self.username,
+            'password': self.password,
             'url': '/result/pc/list/index',
             '_token': token
         }
@@ -83,16 +83,13 @@ class PyNuixo:
             return True
 
 
-    def reauth(self, password=None):
-        if not password:
-            password = getpass("password :")
-
+    def reauth(self):
         reauth_responce = self.session.get(reauthtokenURL, headers=header)
         soup = BeautifulSoup(reauth_responce.text, "html.parser")
         token = soup.find(attrs={'name': '_token'}).get('value')
 
         posted = self.session.post(reauthURL, data={
-            "url": "/result/pc/list/index", "password": password, "_token": token}, headers=header, allow_redirects=False)
+            "url": "/result/pc/list/index", "password": self.password, "_token": token}, headers=header, allow_redirects=False)
         if "認証に失敗" in posted.text:
             print("認証に失敗しました。パスワードが正しく入力できているか確認してください。")
             sys.exit()
