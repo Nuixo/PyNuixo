@@ -24,9 +24,9 @@ header = {
 
 def split_list(l, n):
     """
-    リストをサブリストに分割する
-    :param l: リスト
-    :param n: サブリストの要素数
+    Listを分割
+    :param l: List
+    :param n: 分割数
     :return: 
     """
     for idx in range(0, len(l), n):
@@ -53,11 +53,13 @@ class LoginState(Enum):
 
 class PyNuixo:
     def __init__(self, username, password):
-        self.pickle_path = "cookies.pkl"
+        self.cookie_path = "cookies.pkl"
         self.session = requests.Session()
+        self.__load_cookies(self.session)
 
         self.username = username
         self.password = password
+
 
     def login(self) -> bool:
         res = self.session.get(BASE_URL)
@@ -77,7 +79,7 @@ class PyNuixo:
         login_state = self.__check_login_state(response.text)
 
         if not login_state == LoginState.SUCCESS:
-            raise Exception(f"LOGIN ERROR: {login_state.name}")
+            raise Exception(f"LOGIN ERROR {login_state.name}: {login_state.value}")
         else:
             self.__save_cookies(self.session)
             return True
@@ -94,19 +96,21 @@ class PyNuixo:
             print("認証に失敗しました。パスワードが正しく入力できているか確認してください。")
             sys.exit()
 
-    def score(self, ):
+
+    def fetch_score(self):
         score_res = self.session.get(scoreURL, headers=header)
         if "reauth_login" in score_res.url:
             self.reauth()
             score_res = self.session.get(scoreURL, headers=header)
-        self.__score_parser(score_res.text)
+        return self.__score_parser(score_res.text)
+
 
     def __load_cookies(self, session):
-        with open(self.pickle_path, "rb") as f:
+        with open(self.cookie_path, "rb") as f:
             session.cookies = pickle.load(f)
 
     def __save_cookies(self, session):
-        with open(self.pickle_path, "wb") as f:
+        with open(self.cookie_path, "wb") as f:
             pickle.dump(session.cookies, f)
 
     def __score_parser(self, html):
@@ -152,6 +156,8 @@ class PyNuixo:
 
         for item in subject_scores:
             print(str(item))
+
+        return subject_scores
 
 
     def __check_login_state(self, html) -> LoginState:
