@@ -9,18 +9,6 @@ from getpass import getpass
 import requests
 from bs4 import BeautifulSoup
 
-# BASE_URL = "https://secure.nnn.ed.jp/mypage/"
-# loginURL = "https://secure.nnn.ed.jp/mypage/login"
-# scoreURL = "https://secure.nnn.ed.jp/mypage/result/pc/list/index"
-# #reauthprepareURL = "https://secure.nnn.ed.jp/mypage/reauth_login/prepare?url=/result/pc/list/index"
-# reauthtokenURL = "https://secure.nnn.ed.jp/mypage/reauth_login/index?url=/result/pc/list/index"
-# #reauthloginURL = "https://secure.nnn.ed.jp/mypage/reauth_login/index?url=/result/pc/list/index"
-# reauthURL = "https://secure.nnn.ed.jp/mypage/reauth_login/login"
-
-header = {
-    'User-Agent': 'PyNuixo'
-}
-
 
 def split_list(l, n):
     """
@@ -77,6 +65,9 @@ class PyNuixo:
         self.password = password
 
         self.cookie_path = "cookies.pkl"
+        self.header = {
+            'User-Agent': 'PyNuixo'
+        }
         self.session = requests.Session()
 
         if os.path.exists(self.cookie_path):
@@ -98,7 +89,7 @@ class PyNuixo:
         }
 
         response = self.session.post(MyPageURLs.LOGIN_PATH.get_url(self.school), data=data,
-                                     headers=header, allow_redirects=False)
+                                     headers=self.header, allow_redirects=False)
 
         login_state = self.__check_login_state(response.text)
 
@@ -109,12 +100,12 @@ class PyNuixo:
 
 
     def reauth(self) -> LoginState:
-        reauth_responce = self.session.get(MyPageURLs.REAUTH_TOKEN_PATH.get_url(self.school), headers=header)
+        reauth_responce = self.session.get(MyPageURLs.REAUTH_TOKEN_PATH.get_url(self.school), headers=self.header)
         soup = BeautifulSoup(reauth_responce.text, "html.parser")
         token = soup.find(attrs={'name': '_token'}).get('value')
 
         posted = self.session.post(MyPageURLs.REAUTH_PATH.get_url(self.school), data={
-            "url": "/result/pc/list/index", "password": self.password, "_token": token}, headers=header, allow_redirects=False)
+            "url": "/result/pc/list/index", "password": self.password, "_token": token}, headers=self.header, allow_redirects=False)
         if "認証に失敗" in posted.text:
             print("認証に失敗しました。パスワードが正しく入力できているか確認してください。")
             return LoginState.REAUTH_FAILED
@@ -123,10 +114,10 @@ class PyNuixo:
 
 
     def fetch_score(self) -> [SubjectScore]:
-        score_res = self.session.get(MyPageURLs.SCORE_PATH.get_url(self.school), headers=header)
+        score_res = self.session.get(MyPageURLs.SCORE_PATH.get_url(self.school), headers=self.header)
         if "reauth_login" in score_res.url:
             self.reauth()
-            score_res = self.session.get(MyPageURLs.SCORE_PATH.get_url(self.school), headers=header)
+            score_res = self.session.get(MyPageURLs.SCORE_PATH.get_url(self.school), headers=self.header)
         return self.__score_parser(score_res.text)
 
 
@@ -156,11 +147,6 @@ class PyNuixo:
             else:
                 scores += item
 
-        # print(subjects)
-        # print(report_number)
-        # print(limit_dates)
-        # print(score_with_progresses)
-
         subject_scores = []
 
         subject_index = -1
@@ -178,9 +164,6 @@ class PyNuixo:
                     score=score
                 )
             )
-
-        for item in subject_scores:
-            print(str(item))
 
         return subject_scores
 
