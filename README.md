@@ -6,24 +6,27 @@
 
 ```py
 from pynuixo import PyNuixo
+from pynuixotools import PyNuixoTools
 
 nuixo = PyNuixo("00N1111222", "password")
 
 nuixo.login()
 
-_ = nuixo.fetch_score()
+subjectScores = nuixo.fetch_score()
 # SubjectScore(subject='国語総合(東京書籍版)', limit='6/15', percentage=100, score='100000000000')
 # SubjectScore(subject='国語総合(東京書籍版)', limit='6/15', percentage=100, score='0')
 # ...
 
-nuixo.to_csv()
+nuixo_tools = PyNuixoTools(subjectScores)
+
+csv = nuixo_tools.to_csv()
 # 教科名, 締め切り, 進捗率, 点数
 
-subjects = nuixo.subjects
+subjects = nuixo_tools.get_subjects()
 # ("国語総合", "コミュ英", "古文",...)
 
 # 今月のを返す。
-nuixo.this_month()
+this_month = nuixo_tools.get_this_month_subjectScores()
 
 ```
 
