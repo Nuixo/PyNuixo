@@ -1,10 +1,7 @@
 import os
-import sys
 from dataclasses import dataclass
 from enum import Enum
-import unicodedata
 import pickle
-from getpass import getpass
 
 import requests
 from bs4 import BeautifulSoup
