@@ -18,6 +18,8 @@ subject_scores = nuixo.fetch_subject_scores()
 # SubjectScore(subject='国語総合(東京書籍版)', limit='6/15', percentage=100, score='0')
 # ...
 
+
+
 nuixo_tools = PyNuixoTools(subject_scores)
 
 csv = nuixo_tools.to_csv()
@@ -40,14 +42,15 @@ nuixo.cookie_path = ""
 
 ### Command line
 
-```
+comming soon
+<!-- ```
 $ nuixopy this_month
-```
+``` -->
 
 ## Install
 
 ```
-$pip3 install <this repoository URL>
+$pip3 install https://github.com/Nuixo/PyNuixo
 ```
 
 ## License

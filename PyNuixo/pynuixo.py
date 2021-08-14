@@ -72,7 +72,6 @@ class PyNuixo:
 
         self.school = self.__username2school(self.username)
 
-
     def login(self) -> LoginState:
         res = self.session.get(MyPageURLs.TOKEN_PATH.get_url(self.school))
         soup = BeautifulSoup(res.text, "html.parser")
@@ -95,20 +94,19 @@ class PyNuixo:
 
         return login_state
 
-
     def reauth(self) -> LoginState:
         reauth_responce = self.session.get(MyPageURLs.REAUTH_TOKEN_PATH.get_url(self.school), headers=self.header)
         soup = BeautifulSoup(reauth_responce.text, "html.parser")
         token = soup.find(attrs={'name': '_token'}).get('value')
 
         posted = self.session.post(MyPageURLs.REAUTH_PATH.get_url(self.school), data={
-            "url": "/result/pc/list/index", "password": self.password, "_token": token}, headers=self.header, allow_redirects=False)
+            "url": "/result/pc/list/index", "password": self.password, "_token": token}, headers=self.header,
+                                   allow_redirects=False)
         if "認証に失敗" in posted.text:
             print("認証に失敗しました。パスワードが正しく入力できているか確認してください。")
             return LoginState.REAUTH_FAILED
 
         return LoginState.SUCCESS
-
 
     def fetch_subject_scores(self) -> [SubjectScore]:
         score_res = self.session.get(MyPageURLs.SCORE_PATH.get_url(self.school), headers=self.header)
@@ -116,7 +114,6 @@ class PyNuixo:
             self.reauth()
             score_res = self.session.get(MyPageURLs.SCORE_PATH.get_url(self.school), headers=self.header)
         return self.__score_parser(score_res.text)
-
 
     def __load_cookies(self, session):
         with open(self.cookie_path, "rb") as f:
@@ -164,7 +161,6 @@ class PyNuixo:
 
         return subject_scores
 
-
     def __check_login_state(self, html) -> LoginState:
         if "学籍番号またはパスワードが違います" in html:
             return LoginState.WRONG_ACCOUNT
@@ -176,7 +172,6 @@ class PyNuixo:
             return LoginState.CANT_USE
 
         return LoginState.SUCCESS
-
 
     def __username2school(self, username) -> School:
         if "N" in username:
