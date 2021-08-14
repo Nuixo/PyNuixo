@@ -61,7 +61,7 @@ class School(Enum):
 
 class PyNuixo:
     def __init__(self, username, password):
-        self.username = username
+        self.username = username.upper()
         self.password = password
 
         self.cookie_path = "cookies.pkl"
