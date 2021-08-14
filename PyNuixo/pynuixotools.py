@@ -4,7 +4,7 @@ class PyNuixoTools:
     def __init__(self, subjectScores):
         self.subjectScores = subjectScores
 
-    def get_this_month_subjectScores(self):
+    def get_this_month_subject_scores(self):
         today = datetime.today()
         this_month = today.month
         this_month_subjectScores = []

@@ -113,7 +113,7 @@ class PyNuixo:
         return LoginState.SUCCESS
 
 
-    def fetch_score(self) -> [SubjectScore]:
+    def fetch_subject_scores(self) -> [SubjectScore]:
         score_res = self.session.get(MyPageURLs.SCORE_PATH.get_url(self.school), headers=self.header)
         if "reauth_login" in score_res.url:
             self.reauth()
