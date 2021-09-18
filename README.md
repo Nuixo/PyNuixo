@@ -1,4 +1,4 @@
-![PyNuixoHeader](https://user-images.githubusercontent.com/50548952/129435406-b7a3e8f6-ad04-4183-a3e6-aac9ba699c2c.png)
+<!-- ![PyNuixoHeader](https://user-images.githubusercontent.com/50548952/129435406-b7a3e8f6-ad04-4183-a3e6-aac9ba699c2c.png) -->
 
 # N高 S高成績確認 Python版 Nuixo
 
