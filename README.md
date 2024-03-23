@@ -2,6 +2,9 @@
 
 # N高 S高成績確認 Python版 Nuixo
 
+> [!IMPORTANT]
+> 卒業しました。
+
 ## Usage
 
 ### Python Script
@@ -58,5 +61,3 @@ $pip3 install https://github.com/Nuixo/PyNuixo
 ## License
 
 under the GPL v3.
-
-**商用利用厳禁。**
